@@ -8,7 +8,7 @@ import Swal from 'sweetalert2';
 
 const Students = ({ persons, fetchData }) => {
     const [loadingId, setLoadingId] = useState(null);
-
+    const [selectedRows, setSelectedRows] = useState([]);
     const handleDelete = async (id) => {
         setLoadingId(id);
         try {
@@ -34,6 +34,47 @@ const Students = ({ persons, fetchData }) => {
             });
         }
         setLoadingId(null);
+    };
+    
+    const handleBulkDelete = async () => {
+        if (selectedRows.length === 0) return;
+        
+        const confirmDelete = await Swal.fire({
+            icon: 'warning',
+            title: 'Are you sure?',
+            text: `You are about to delete ${selectedRows.length} records.`,
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete them!',
+        });
+
+        if (!confirmDelete.isConfirmed) return;
+
+        try {
+            await Promise.all(
+                selectedRows.map(async (row) => {
+                    await axios.delete(`https://fake-form.onrender.com/api/students/${row._id}`);
+                })
+            );
+            fetchData();
+            Swal.fire({
+                icon: 'success',
+                title: 'Deleted!',
+                text: 'Selected records have been deleted.',
+                confirmButtonColor: '#700601',
+                confirmButtonText: 'OK'
+            });
+            setSelectedRows([]);
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: `Error deleting selected data: ${error.message}`,
+                confirmButtonColor: '#700601',
+                confirmButtonText: 'OK'
+            });
+        }
     };
 
     const columns = [
@@ -99,7 +140,7 @@ const Students = ({ persons, fetchData }) => {
     const customStyles = {
         headCells: {
             style: {
-                fontSize: '20px',
+                fontSize: '18px',
                 fontWeight: 'bold',
                 textAlign: 'center',
             },
@@ -107,7 +148,7 @@ const Students = ({ persons, fetchData }) => {
         cells: {
             style: {
                 fontSize: '14px',
-                padding: '16px',
+                padding: '2px',
                 textAlign: 'center',
             },
         },
@@ -118,7 +159,16 @@ const Students = ({ persons, fetchData }) => {
             <Sidebar />
             <div className="w-[80%] bg-white flex flex-col ml-2 mb-4">
                 <h1 className="text-left font-bold text-3xl my-4 px-2">Form Data</h1>
-                <DataTable columns={columns} data={persons} customStyles={customStyles} />
+                {selectedRows.length > 0 && (
+                    <button
+                        onClick={handleBulkDelete}
+                        className="bg-red-600 text-white px-4 py-2 rounded mb-4 w-max self-start ml-2 flex  items-center justify-center"
+                    >
+                       <Trash2/> Delete Selected ({selectedRows.length})
+                    </button>
+                )}
+                <DataTable columns={columns} data={persons} customStyles={customStyles} pagination paginationPerPage={30} paginationRowsPerPageOptions={[30, 50, 100, persons.length]} selectableRows
+                    onSelectedRowsChange={({ selectedRows }) => setSelectedRows(selectedRows)}/>
             </div>
         </div>
     );

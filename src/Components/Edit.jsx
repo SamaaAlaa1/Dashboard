@@ -28,9 +28,9 @@ const Edit = ({ fetchData }) => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setData({ ...data, [name]: value });
-
+    
         let errorMsg = '';
-
+    
         if (name === 'name' && value.trim().length < 3) {
             errorMsg = 'Name must be at least 3 characters';
         }
@@ -43,15 +43,21 @@ const Edit = ({ fetchData }) => {
         if (name === 'age' && (value < 18 || value > 80)) {
             errorMsg = 'Age must be between 18 and 80';
         }
-        if (name === 'level' && value <= 0 || value > 5) {
+        if (name === 'level' && (value <= 0 || value > 5)) {
             errorMsg = 'Level must be between 1 and 5';
         }
-        if (name === 'university' && value.trim() === '' || !universities.includes(value))  {
+        if (
+            name === 'university' && 
+            value.trim() !== '' && 
+            !universities.map(u => u.toLowerCase()).includes(value.trim().toLowerCase()) &&
+            value.trim().toLowerCase() !== "other"
+        ) {
             errorMsg = 'University is not valid';
         }
-
+    
         setErrors((prevErrors) => ({ ...prevErrors, [name]: errorMsg }));
     };
+    
 
     const isFormValid = () => {
         return Object.values(errors).every((error) => error === '') &&

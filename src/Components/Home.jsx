@@ -40,7 +40,7 @@ const Home = ({persons}) => {
     const customStyles = {
         headCells: {
             style: {
-                fontSize: '22px',
+                fontSize: '18px',
                 fontWeight: 'bold',
                 textAlign: 'center',
             },
@@ -48,7 +48,7 @@ const Home = ({persons}) => {
         cells: {
             style: {
                 fontSize: '18px',
-                padding: '20px',
+                padding: '8px',
                 textAlign: 'center',
             },
         },
@@ -58,10 +58,10 @@ const Home = ({persons}) => {
     <div className="w-full flex h-screen">
       <Sidebar />
       <div className="w-[80%] bg-white flex flex-col">
-       <div className="font-semibold mt-[5%]  ml-[5%] flex">
+       <div className=" mt-[3%]  ml-[5%] flex">
         <div className="flex flex-col mb-[5%]">
-        <h1 className="text-[80px] ">Hello!</h1>
-        <p className="text-[50px]">welcome to Dashboard</p>
+        <h1 className="text-[120px] font-semibold ">Hello!</h1>
+        <p className="text-[30px] font-thin">Welcome to Dashboard</p>
         </div>
        </div>
         <DataTable
@@ -70,7 +70,7 @@ const Home = ({persons}) => {
         customStyles={customStyles}
         >
         </DataTable>
-        <Link to="/students" className="border mt-8 rounded-lg bg-[#700601] w-[20%] mx-auto py-3 text-xl text-white">View All Data</Link>
+        <Link to="/students" className="border mt-8 mb-4 rounded-lg bg-[#700601] w-[15%] mx-auto py-3 text-xl text-white">View All Data</Link>
 
         </div>
     </div>
