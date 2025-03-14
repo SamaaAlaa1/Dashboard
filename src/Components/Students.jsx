@@ -42,10 +42,10 @@ const Students = ({ persons, fetchData }) => {
         const confirmDelete = await Swal.fire({
             icon: 'warning',
             title: 'Are you sure?',
-            text: `You are about to delete ${selectedRows.length} records.`,
+            text: `You are about to delete ${selectedRows.length} rows`,
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
+            confirmButtonColor: '#700601',
+            cancelButtonColor: '#c1c1c1',
             confirmButtonText: 'Yes, delete them!',
         });
 

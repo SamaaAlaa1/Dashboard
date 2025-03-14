@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { motion } from "framer-motion";
 import logo from "../assets/logo.png";
+import Swal from 'sweetalert2';
 
 const Login = () => {
     const { token, login } = useAuth();
@@ -18,10 +19,25 @@ const Login = () => {
             navigate("/", { replace: true });
         }
     }, [token, navigate]);
-
+    
+    const validateMail = () => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            Swal.fire({
+                icon: "warning",
+                title: "Invalid Email",
+                text: "Please enter a valid email address!",
+                confirmButtonColor: "#700601",
+            });
+            return false;
+        }
+        return true;
+    }
     const handleLogin = async (e) => {
         e.preventDefault();
-        setError(null);
+        if (!validateMail()) {
+            return;
+        }
         setLoading(true);
 
         try {
@@ -34,10 +50,20 @@ const Login = () => {
                 login(response.data.token);
                 navigate("/", { replace: true });
             } else {
-                setError("Invalid email or password");
+                Swal.fire({
+                    icon: "error",
+                    title: "Login Failed",
+                    text: "Invalid email or password!",
+                    confirmButtonColor: "#700601",
+                });
             }
         } catch (err) {
-            setError("Login failed. Please try again.");
+            Swal.fire({
+                icon: "error",
+                title: "Login Failed",
+                text: "Wrong email or password!",
+                confirmButtonColor: "#700601",
+            });
         } finally {
             setLoading(false);
         }
@@ -62,25 +88,36 @@ const Login = () => {
                         repeatDelay: 1,
                     }}
                 />
-                <h2 className="text-3xl font-bold mb-4 ">Login</h2>
-                {error && <p className="text-red-500">{error}</p>}
                 <form onSubmit={handleLogin} className="flex flex-col gap-4  items-center">
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="px-4 py-3 w-[350px] bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#700601] focus:border-[#700601] transition-all duration-200"
-                        required
-                    />
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="px-4 py-3 w-[350px] bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#700601] focus:border-[#700601] transition-all duration-200"
-                        required
-                    />
+                <div className="flex flex-col w-[350px]">
+                        <label htmlFor="email" className="text-gray-700 font-semibold mb-1 text-left">
+                            Email
+                        </label>
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="Enter your email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="px-4 py-3 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#700601] focus:border-[#700601] transition-all duration-200"
+                            required
+                        />
+                    </div>
+
+                    <div className="flex flex-col w-[350px]">
+                        <label htmlFor="password" className="text-gray-700 font-semibold mb-1 text-left">
+                            Password
+                        </label>
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="Enter your password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="px-4 py-3 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#700601] focus:border-[#700601] transition-all duration-200"
+                            required
+                        />
+                    </div>
                     <button
                         type="submit"
                         className="px-4 py-2 bg-[#700601] text-white rounded-lg font-semibold w-[350px] transition-all duration-200 hover:bg-[#3d110e] focus:outline-none focus:ring-2 focus:ring-[#700601] focus:border-[#700601]"
